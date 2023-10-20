@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 5000
@@ -26,6 +26,13 @@ async function run() {
 
         const cars = client.db("carDB").collection("cars");
 
+
+        // Get all data
+        app.get('/', async (req, res) => {
+            const result = await cars.find().toArray();
+            res.send(result)
+        })
+        // Get data for each card
         app.get('/bmw', async (req, res) => {
             const result = await cars.find({ "brandName": "BMW" }).toArray();
             res.send(result)
@@ -46,6 +53,45 @@ async function run() {
             const result = await cars.find({ "brandName": "Mercedes-Benz" }).toArray();
             res.send(result)
         })
+
+
+        // Get by id
+        app.get('/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await cars.findOne(query);
+            res.send(result)
+        })
+
+        // Add Car
+        app.post('/', async (req, res) => {
+            const addCar = req.body;
+            const result = await cars.insertOne(addCar);
+            res.send(result)
+        })
+
+        // Update Car
+        app.put('/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const option = { upsert: true }
+            const updateCar = req.body;
+
+            const car = {
+                $set: {
+                    name: updateCar.name,
+                    brandName: updateCar.brandName,
+                    category: updateCar.category,
+                    image: updateCar.image,
+                    price: updateCar.price,
+                    rating: updateCar.rating,
+                    details: updateCar.details
+                }
+            }
+            const result = await cars.updateOne(filter, car, option);
+            res.send(result)
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
