@@ -25,7 +25,7 @@ async function run() {
         await client.connect();
 
         const cars = client.db("carDB").collection("cars");
-
+        const cart = client.db("carDB").collection("cart");
 
         // Get all data
         app.get('/', async (req, res) => {
@@ -55,6 +55,7 @@ async function run() {
         })
 
 
+
         // Get by id
         app.get('/:id', async (req, res) => {
             const id = req.params.id;
@@ -64,7 +65,7 @@ async function run() {
         })
 
         // Add Car
-        app.post('/', async (req, res) => {
+        app.post('/cart', async (req, res) => {
             const addCar = req.body;
             const result = await cars.insertOne(addCar);
             res.send(result)
@@ -89,6 +90,23 @@ async function run() {
                 }
             }
             const result = await cars.updateOne(filter, car, option);
+            res.send(result)
+        })
+
+
+        // Get Cart
+        app.get('/cart/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const query = { email: new ObjectId(email) }
+            const result = await cart.find(query).toArray();
+            res.send(result)
+        })
+
+        // Add cart
+        app.post('/cart', async (req, res) => {
+            const addCart = req.body;
+            const result = await cart.insertOne(addCart);
             res.send(result)
         })
 
