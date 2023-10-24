@@ -55,7 +55,6 @@ async function run() {
         })
 
 
-
         // Get by id
         app.get('/cars/:id', async (req, res) => {
             const id = req.params.id;
@@ -101,7 +100,11 @@ async function run() {
             res.send(result)
         })
 
-
+        //Show all cart
+        app.get('/cart', async (req, res) => {
+            const result = await cart.find().toArray();
+            res.send(result)
+        })
 
 
         // Send a ping to confirm a successful connection
