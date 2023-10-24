@@ -22,34 +22,34 @@ app.use(express.json())
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const cars = client.db("carDB").collection("cars");
         const cart = client.db("carDB").collection("cart");
 
         // Get all data
-        app.get('/', async (req, res) => {
+        app.get('/cars', async (req, res) => {
             const result = await cars.find().toArray();
             res.send(result)
         })
         // Get data for each card
-        app.get('/bmw', async (req, res) => {
+        app.get('/cars/bmw', async (req, res) => {
             const result = await cars.find({ "brandName": "BMW" }).toArray();
             res.send(result)
         })
-        app.get('/ford', async (req, res) => {
+        app.get('/cars/ford', async (req, res) => {
             const result = await cars.find({ "brandName": "Ford" }).toArray();
             res.send(result)
         })
-        app.get('/toyota', async (req, res) => {
+        app.get('/cars//toyota', async (req, res) => {
             const result = await cars.find({ "brandName": "Toyota" }).toArray();
             res.send(result)
         })
-        app.get('/tesla', async (req, res) => {
+        app.get('/cars/tesla', async (req, res) => {
             const result = await cars.find({ "brandName": "Tesla" }).toArray();
             res.send(result)
         })
-        app.get('/mercedes-benz', async (req, res) => {
+        app.get('/cars/mercedes-benz', async (req, res) => {
             const result = await cars.find({ "brandName": "Mercedes-Benz" }).toArray();
             res.send(result)
         })
@@ -57,7 +57,7 @@ async function run() {
 
 
         // Get by id
-        app.get('/:id', async (req, res) => {
+        app.get('/cars/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await cars.findOne(query);
@@ -65,14 +65,14 @@ async function run() {
         })
 
         // Add Car
-        app.post('/cart', async (req, res) => {
+        app.post('/cars', async (req, res) => {
             const addCar = req.body;
             const result = await cars.insertOne(addCar);
             res.send(result)
         })
 
         // Update Car
-        app.put('/:id', async (req, res) => {
+        app.put('/cars/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const option = { upsert: true }
@@ -94,21 +94,14 @@ async function run() {
         })
 
 
-        // Get Cart
-        app.get('/cart/:email', async (req, res) => {
-            const email = req.params.email;
-            console.log(email);
-            const query = { email: new ObjectId(email) }
-            const result = await cart.find(query).toArray();
+        // Add Cart
+        app.post('/cart', async (req, res) => {
+            const addCar = req.body;
+            const result = await cart.insertOne(addCar);
             res.send(result)
         })
 
-        // Add cart
-        app.post('/cart', async (req, res) => {
-            const addCart = req.body;
-            const result = await cart.insertOne(addCart);
-            res.send(result)
-        })
+
 
 
         // Send a ping to confirm a successful connection
