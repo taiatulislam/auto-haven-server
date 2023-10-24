@@ -41,7 +41,7 @@ async function run() {
             const result = await cars.find({ "brandName": "Ford" }).toArray();
             res.send(result)
         })
-        app.get('/cars//toyota', async (req, res) => {
+        app.get('/cars/toyota', async (req, res) => {
             const result = await cars.find({ "brandName": "Toyota" }).toArray();
             res.send(result)
         })
@@ -51,6 +51,10 @@ async function run() {
         })
         app.get('/cars/mercedes-benz', async (req, res) => {
             const result = await cars.find({ "brandName": "Mercedes-Benz" }).toArray();
+            res.send(result)
+        })
+        app.get('/cars/honda', async (req, res) => {
+            const result = await cars.find({ "brandName": "Honda" }).toArray();
             res.send(result)
         })
 
@@ -106,6 +110,14 @@ async function run() {
             res.send(result)
         })
 
+
+        // Delete Cart
+        app.delete('/cart/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: id }
+            const result = await cart.deleteOne(query);
+            res.send(result)
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
